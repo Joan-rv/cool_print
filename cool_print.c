@@ -7,9 +7,16 @@
 
 int main(int argc, char** argv) {
     char* s = NULL;
-    if (argc >= 2) {
+    int delay = 10;
+    // two or three arguments
+    if (argc >= 2 && argc <= 3) {
         s = argv[1];
+        if (argc == 3) {
+            delay = atoi(argv[2]);
+        }
     } else {
+        fprintf(stderr,
+                "USAGE: cool_print TEXT [DELAY]\nNote that DELAY is in ms\n");
         return -1;
     }
     size_t len = strlen(s);
@@ -18,9 +25,11 @@ int main(int argc, char** argv) {
     srand(time(NULL));
     for (size_t i = 0; i < len; i++) {
         if (!isprint(s[i])) {
-            printf("Charachter \"%c\" not allowed\n", s[i]);
+            fprintf(stderr, "Charachter \"%c\" not allowed\n", s[i]);
             return -1;
         }
+    }
+    for (size_t i = 0; i < len; i++) {
         while (p[i] != s[i]) {
             p[i] = rand() % 255;
             while (!isprint(p[i])) {
@@ -28,7 +37,7 @@ int main(int argc, char** argv) {
             }
             printf("\r%s", p);
             fflush(stdout);
-            usleep(10000);
+            usleep(1000 * delay);
         }
     }
     puts("");
